@@ -3,7 +3,7 @@
 - Create a case class for each database table you want to generate data for. 
 - Create companion object for each case class and make it extend ```Table[_]``` trait with itself as type parameter.
 - Implement all the necessary fields/functions of ```Table[_]``` trait.
-- In case of relationships between tables, make UUID of referenced as a field of class, not the whole class.
+- In case of relationships between tables, make UUID of referenced as a field of class, not the whole class. Use ```getRandomRow``` method of that class to get a random one.
 - In case of enums, create sealed trait with case objects extending it, as in example below.
 - You define generator logic by overriding ```generator``` field from ```Table[_]``` trait. There are some predefined 'rules' in ```Generator``` class, but you'd likely want to adjust them to your needs.
 - In ```Main```, only add case classes you created to ```tables``` list and run. SQL files will be generated in ```resources```.
