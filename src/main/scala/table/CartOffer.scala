@@ -3,7 +3,6 @@ package table
 
 import generationUtil.{ DbInsert, Generation }
 
-import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.util.UUID
