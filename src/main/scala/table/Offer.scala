@@ -7,9 +7,8 @@ import table.Offer.{ OfferType, PublicationDate, ShipmentType }
 import fs2.io.file.Path
 import org.scalacheck.Gen
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 case class Offer(
     offerId: UUID,
@@ -21,7 +20,7 @@ case class Offer(
 
 object Offer extends Table[Offer] {
 
-  final case class PublicationDate(value: LocalDate)
+  final case class PublicationDate(value: LocalDateTime)
 
   sealed trait OfferType
   object OfferType {
@@ -38,9 +37,8 @@ object Offer extends Table[Offer] {
     final case object ODBIOR_OSOBISTY extends ShipmentType
   }
 
-  override val tableName: String               = "offer"
-  override val filePath: Path                  = Path("src/main/resources/sql/data/tmp3/offer_tmp.sql")
-  override val inMemoryList: ListBuffer[Offer] = ListBuffer()
+  override val tableName: String = "offer"
+  //override val rowsToGenerate: Long = 200_000L
   override val generator: Gen[Offer] = for {
     offerId         <- Generation.uuidGen
     publicationDate <- Generation.publicationDateGen

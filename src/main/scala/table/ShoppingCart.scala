@@ -4,11 +4,9 @@ package table
 import generationUtil.{ DbInsert, Generation }
 import table.ShoppingCart.Stage
 
-import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 case class ShoppingCart(
     shoppingCartId: UUID,
@@ -25,9 +23,8 @@ object ShoppingCart extends Table[ShoppingCart] {
     final case object PLATNOSC   extends Stage
   }
 
-  override val tableName: String                      = "shopping_cart"
-  override val filePath: Path                         = Path("src/main/resources/sql/data/tmp3/shopping_cart_tmp.sql")
-  override val inMemoryList: ListBuffer[ShoppingCart] = ListBuffer()
+  override val tableName: String = "shopping_cart"
+  //override val rowsToGenerate: Long = 1_000_000L
   override val generator: Gen[ShoppingCart] = for {
     shoppingCartId <- Generation.uuidGen
     stage          <- Generation.stageGen

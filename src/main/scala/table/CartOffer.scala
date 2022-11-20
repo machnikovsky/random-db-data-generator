@@ -7,7 +7,6 @@ import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 case class CartOffer(
     cartOfferId: UUID,
@@ -18,9 +17,8 @@ case class CartOffer(
 
 object CartOffer extends Table[CartOffer] {
 
-  override val tableName: String                   = "cart_offer"
-  override val filePath: Path                      = Path("src/main/resources/sql/data/tmp3/cart_offer_tmp.sql")
-  override val inMemoryList: ListBuffer[CartOffer] = ListBuffer()
+  override val tableName: String = "cart_offer"
+  //override val rowsToGenerate: Long = 10_000L
   override val generator: Gen[CartOffer] = for {
     cartOfferId <- Generation.uuidGen
     quantity    <- Gen.choose(0, 50)

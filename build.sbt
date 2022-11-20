@@ -9,9 +9,9 @@ lazy val root = (project in file("."))
   )
 
 libraryDependencies ++= Seq(
-  "io.github.etspaceman" %% "scalacheck-faker" % "7.0.0",
-  "co.fs2"               %% "fs2-core"         % "3.3.0",
-  "co.fs2"               %% "fs2-io"           % "3.3.0"
+  "io.github.etspaceman" %% "scalacheck-faker"           % "7.0.0",
+  "co.fs2"               %% "fs2-core"                   % "3.3.0",
+  "co.fs2"               %% "fs2-io"                     % "3.3.0",
 )
 
 addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full)

@@ -8,20 +8,18 @@ import faker.name.{ FirstName, LastName }
 import fs2.io.file.Path
 import org.scalacheck.Gen
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 final case class Client(clientId: UUID, firstName: FirstName, lastName: LastName, pesel: PESEL, birthDate: BirthDate)
 
 object Client extends Table[Client] {
 
-  final case class BirthDate private (value: LocalDate) extends AnyVal
-  final case class PESEL private (value: String) extends AnyVal
+  final case class BirthDate private (value: LocalDateTime) extends AnyVal
+  final case class PESEL private (value: String)        extends AnyVal
 
-  override val tableName: String                = "client"
-  override val filePath: Path                   = Path("src/main/resources/sql/data/tmp3/client_tmp.sql")
-  override val inMemoryList: ListBuffer[Client] = ListBuffer()
+  override val tableName: String = "client"
+  //override val rowsToGenerate: Long = 100_000L
   override val generator: Gen[Client] = for {
     clientId  <- Generation.uuidGen
     firstName <- Generation.firstNameGen

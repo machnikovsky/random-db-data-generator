@@ -7,7 +7,6 @@ import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 case class Recommendation(
     recommendationId: UUID,
@@ -20,9 +19,8 @@ case class Recommendation(
 
 object Recommendation extends Table[Recommendation] {
 
-  override val tableName: String                        = "recommendation"
-  override val filePath: Path                           = Path("src/main/resources/sql/data/tmp3/recommendation_tmp.sql")
-  override val inMemoryList: ListBuffer[Recommendation] = ListBuffer()
+  override val tableName: String = "recommendation"
+  //override val rowsToGenerate: Long = 10_000L
   override val generator: Gen[Recommendation] = for {
     recommendationId <- Generation.uuidGen
     content          <- Generation.loremWordGen

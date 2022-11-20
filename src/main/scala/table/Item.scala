@@ -8,7 +8,6 @@ import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 final case class Item(itemId: UUID, name: String, description: String, category: Category, price: BigDecimal)
 
@@ -24,9 +23,8 @@ object Item extends Table[Item] {
     final case object INNE          extends Category
   }
 
-  override val tableName                      = "item"
-  override val filePath: Path                 = Path("src/main/resources/sql/data/tmp3/item_tmp.sql")
-  override val inMemoryList: ListBuffer[Item] = ListBuffer()
+  override val tableName      = "item"
+  //override val rowsToGenerate: Long = 300_000L
   override val generator: Gen[Item] =
     for {
       itemId      <- Generation.uuidGen

@@ -7,9 +7,8 @@ import table.Purchase.{ PaymentMethod, PurchaseDate }
 import fs2.io.file.Path
 import org.scalacheck.Gen
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 case class Purchase(
     purchaseId: UUID,
@@ -22,7 +21,7 @@ case class Purchase(
 
 object Purchase extends Table[Purchase] {
 
-  final case class PurchaseDate(value: LocalDate) extends AnyVal
+  final case class PurchaseDate(value: LocalDateTime) extends AnyVal
 
   sealed trait PaymentMethod
   object PaymentMethod {
@@ -30,9 +29,9 @@ object Purchase extends Table[Purchase] {
     final case object CARD   extends PaymentMethod
   }
 
-  override val tableName: String                  = "purchase"
-  override val filePath: Path                     = Path("src/main/resources/sql/data/tmp3/purchase_tmp.sql")
-  override val inMemoryList: ListBuffer[Purchase] = ListBuffer()
+  override val tableName: String = "purchase"
+  //override val rowsToGenerate: Long = 1_000_000L
+
   override val generator: Gen[Purchase] = for {
     purchaseId    <- Generation.uuidGen
     quantity      <- Gen.choose(0, 50)

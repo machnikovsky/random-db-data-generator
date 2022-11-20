@@ -7,9 +7,8 @@ import table.Account.{ BankAccountNumber, CreatedAt }
 import fs2.io.file.Path
 import org.scalacheck.Gen
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 final case class Account(accountId: UUID,
                          clientId: UUID,
@@ -23,11 +22,10 @@ final case class Account(accountId: UUID,
 object Account extends Table[Account] {
 
   final case class BankAccountNumber private (value: String) extends AnyVal
-  final case class CreatedAt private (value: LocalDate)      extends AnyVal
+  final case class CreatedAt private (value: LocalDateTime)      extends AnyVal
 
-  override val tableName: String                 = "account"
-  override val filePath: Path                    = Path("src/main/resources/sql/data/tmp3/account_tmp.sql")
-  override val inMemoryList: ListBuffer[Account] = ListBuffer()
+  override val tableName: String = "account"
+  //override val rowsToGenerate: Long = 100_000L
   override val generator: Gen[Account] =
     for {
       accountId         <- Generation.uuidGen

@@ -7,9 +7,8 @@ import table.Return.ReturnDate
 import fs2.io.file.Path
 import org.scalacheck.Gen
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
-import scala.collection.mutable.ListBuffer
 
 case class Return(
     returnId: UUID,
@@ -21,11 +20,10 @@ case class Return(
 
 object Return extends Table[Return] {
 
-  final case class ReturnDate(value: LocalDate) extends AnyVal
+  final case class ReturnDate(value: LocalDateTime) extends AnyVal
 
-  override val tableName: String                = "return"
-  override val filePath: Path                   = Path("src/main/resources/sql/data/tmp3/return_tmp.sql")
-  override val inMemoryList: ListBuffer[Return] = ListBuffer()
+  override val tableName: String = "return"
+  //override val rowsToGenerate: Long = 20_000L
   override val generator: Gen[Return] = for {
     returnId <- Generation.uuidGen
     quantity <- Gen.choose(0, 50)
