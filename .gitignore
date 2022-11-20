@@ -1,3 +1,6 @@
+# generated files
+src/main/resources/sql
+
 # bloop and metals
 .bloop
 .bsp
