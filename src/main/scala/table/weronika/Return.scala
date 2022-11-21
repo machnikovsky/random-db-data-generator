@@ -4,6 +4,7 @@ package table.weronika
 import generationUtil.Generation
 import table.Table
 
+import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.time.LocalDateTime
@@ -18,7 +19,8 @@ case class Return(
 
 object Return extends Table[Return] {
 
-  override val tableName: String = "return"
+  override val tableName: String   = "`return`"
+  override lazy val filePath: Path = tableDirectory / "return_weronika.sql"
   override val generator: Gen[Return] = for {
     returnId      <- Generation.uuidGen
     date          <- Generation.timeFromGen(15)

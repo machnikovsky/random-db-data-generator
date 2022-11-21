@@ -3,7 +3,6 @@ package table.weronika
 
 import generationUtil.Generation
 import table.Table
-import table.kuba.Item
 import table.weronika.Offer.Status
 
 import enumeratum.EnumEntry.Uppercase
@@ -34,7 +33,7 @@ object Offer extends Table[Offer] {
   override val tableName: String = "offer"
   override val generator: Gen[Offer] = for {
     offerId     <- Generation.uuidGen
-    description <- Generation.stringOfNCharsGen(100)
+    description <- Generation.stringOfNCharsGen(50)
     status      <- Generation.enumGen(Status)
   } yield Offer(offerId, User.getRandomRow.userId, description, status, Item.getRandomRow.itemId)
 
