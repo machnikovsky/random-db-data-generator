@@ -1,9 +1,8 @@
 package pl.machnikovsky.generator
 package table
 
-import generationUtil.{ DbInsert, Generation }
+import generationUtil.Generation
 
-import fs2.io.file.Path
 import org.scalacheck.Gen
 
 import java.util.UUID
@@ -20,21 +19,20 @@ case class Recommendation(
 object Recommendation extends Table[Recommendation] {
 
   override val tableName: String = "recommendation"
-  //override val rowsToGenerate: Long = 10_000L
+  //override val rowsTogenerate: Long = 10_000L
   override val generator: Gen[Recommendation] = for {
     recommendationId <- Generation.uuidGen
-    content          <- Generation.loremWordGen
-    showedCount      <- Gen.choose(0, 100000)
-    clickedCount     <- Gen.choose(0, showedCount)
+    content          <- Generation.stringOfNCharsGen(30)
+    showedCount      <- Generation.numFromTo(0, 100000)
+    clickedCount     <- Generation.numFromTo(0, showedCount)
   } yield
     Recommendation(recommendationId,
                    Account.getRandomRow.accountId,
                    Offer.getRandomRow.offerId,
-                   content.value,
+                   content,
                    showedCount,
                    clickedCount)
 
-  override implicit val dbInsert: DbInsert[Recommendation] = (recommendation: Recommendation) =>
-    s"insert into $tableName(recommendation_id, account_id, offer_id, content, showed_count, clicked_count) values ('${recommendation.recommendationId}', '${recommendation.accountId}', '${recommendation.offerId}', '${recommendation.content}', '${recommendation.showedCount}', '${recommendation.clickedCount}');"
-
+  override def accessFields(recommendation: Recommendation): Iterator[String] = recommendation.productElementNames
+  override def accessValues(recommendation: Recommendation): Iterator[Any] = recommendation.productIterator
 }

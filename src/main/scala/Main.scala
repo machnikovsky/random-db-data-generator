@@ -9,8 +9,6 @@ import cats.syntax.parallel._
 
 object Main extends IOApp {
 
-  // TODO: change date type to include time!!!!
-
   // To change generated tables, you only need to modify this list
   val tables: List[Table[_]] = List(
     Client,

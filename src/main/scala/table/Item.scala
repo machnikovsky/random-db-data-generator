@@ -1,10 +1,11 @@
 package pl.machnikovsky.generator
 package table
 
-import generationUtil.{ DbInsert, Generation }
+import generationUtil.Generation
 import table.Item.Category
 
-import fs2.io.file.Path
+import enumeratum.EnumEntry.Uppercase
+import enumeratum._
 import org.scalacheck.Gen
 
 import java.util.UUID
@@ -13,28 +14,31 @@ final case class Item(itemId: UUID, name: String, description: String, category:
 
 object Item extends Table[Item] {
 
-  sealed trait Category
-  object Category {
+  sealed trait Category extends EnumEntry with Uppercase
+  object Category extends Enum[Category] {
+
+    val values: IndexedSeq[Category] = findValues
+
     final case object OBUWIE        extends Category
     final case object UBRANIA       extends Category
     final case object SAMOCHODY     extends Category
     final case object NIERUCHOMOSCI extends Category
     final case object ZABAWKI       extends Category
     final case object INNE          extends Category
+
   }
 
-  override val tableName      = "item"
-  //override val rowsToGenerate: Long = 300_000L
+  override val tableName = "item"
+  //override val rowsTogenerate: Long = 300_000L
   override val generator: Gen[Item] =
     for {
       itemId      <- Generation.uuidGen
-      name        <- Gen.stringOfN(10, Gen.alphaChar)
-      description <- Gen.stringOfN(10, Gen.alphaChar)
-      category    <- Generation.categoryGen
+      name        <- Generation.stringOfNCharsGen(10)
+      description <- Generation.stringOfNCharsGen(10)
+      category    <- Generation.enumGen(Category)
       price       <- Generation.priceGen
     } yield Item(itemId, name, description, category, price)
 
-  override implicit val dbInsert: DbInsert[Item] = (item: Item) =>
-    s"insert into $tableName(item_id, name, description, category, price) values ('${item.itemId}', '${item.name}', '${item.description}', '${item.category}', '${item.price}');"
-
+  override def accessFields(item: Item): Iterator[String] = item.productElementNames
+  override def accessValues(item: Item): Iterator[Any]    = item.productIterator
 }

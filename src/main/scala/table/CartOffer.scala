@@ -1,7 +1,7 @@
 package pl.machnikovsky.generator
 package table
 
-import generationUtil.{ DbInsert, Generation }
+import generationUtil.Generation
 
 import org.scalacheck.Gen
 
@@ -17,13 +17,12 @@ case class CartOffer(
 object CartOffer extends Table[CartOffer] {
 
   override val tableName: String = "cart_offer"
-  //override val rowsToGenerate: Long = 10_000L
+  //override val rowsTogenerate: Long = 10_000L
   override val generator: Gen[CartOffer] = for {
     cartOfferId <- Generation.uuidGen
-    quantity    <- Gen.choose(0, 50)
+    quantity    <- Generation.numFromTo(0, 50)
   } yield CartOffer(cartOfferId, ShoppingCart.getRandomRow.shoppingCartId, Offer.getRandomRow.offerId, quantity)
 
-  override implicit val dbInsert: DbInsert[CartOffer] = (cartOffer: CartOffer) =>
-    s"insert into $tableName(cart_offer_id, shopping_cart_id, offer_id, quantity) values ('${cartOffer.cartOfferId}', '${cartOffer.shoppingCartId}', '${cartOffer.offerId}', '${cartOffer.quantity}');"
-
+  override def accessFields(cartOffer: CartOffer): Iterator[String] = cartOffer.productElementNames
+  override def accessValues(cartOffer: CartOffer): Iterator[Any]    = cartOffer.productIterator
 }

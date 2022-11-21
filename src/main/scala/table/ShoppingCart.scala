@@ -1,9 +1,11 @@
 package pl.machnikovsky.generator
 package table
 
-import generationUtil.{ DbInsert, Generation }
+import generationUtil.Generation
 import table.ShoppingCart.Stage
 
+import enumeratum.EnumEntry.Uppercase
+import enumeratum._
 import org.scalacheck.Gen
 
 import java.util.UUID
@@ -16,21 +18,23 @@ case class ShoppingCart(
 
 object ShoppingCart extends Table[ShoppingCart] {
 
-  sealed trait Stage
-  object Stage {
+  sealed trait Stage extends EnumEntry with Uppercase
+  object Stage extends Enum[Stage] {
+
+    val values: IndexedSeq[Stage] = findValues
+
     final case object PUSTY      extends Stage
     final case object ZAPELNIONY extends Stage
-    final case object PLATNOSC   extends Stage
+    final case object PLATNOSC   extends Stage with Uppercase
   }
 
   override val tableName: String = "shopping_cart"
-  //override val rowsToGenerate: Long = 1_000_000L
+  //override val rowsTogenerate: Long = 1_000_000L
   override val generator: Gen[ShoppingCart] = for {
     shoppingCartId <- Generation.uuidGen
-    stage          <- Generation.stageGen
+    stage          <- Generation.enumGen(Stage)
   } yield ShoppingCart(shoppingCartId, Account.getRandomRow.accountId, stage)
 
-  override implicit val dbInsert: DbInsert[ShoppingCart] = (shoppingCart: ShoppingCart) =>
-    s"insert into $tableName(shopping_cart_id, account_id, stage) values ('${shoppingCart.shoppingCartId}', '${shoppingCart.accountId}', '${shoppingCart.stage}');"
-
+  override def accessFields(shoppingCart: ShoppingCart): Iterator[String] = shoppingCart.productElementNames
+  override def accessValues(shoppingCart: ShoppingCart): Iterator[Any]    = shoppingCart.productIterator
 }
