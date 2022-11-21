@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS client
 CREATE TYPE category AS ENUM ('OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE');
 CREATE TYPE offer_type AS ENUM ('KUP_TERAZ', 'LICYTACJA', 'OGLOSZENIE');
 CREATE TYPE shipment_type AS ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY');
-CREATE TYPE stage AS ENUM ('PUSTY', 'ZAPELNIONY', 'PLATNOSC');
 CREATE TYPE payment_method AS ENUM ('CREDIT', 'CARD');
 
 CREATE TABLE IF NOT EXISTS item
@@ -59,8 +58,7 @@ CREATE TABLE IF NOT EXISTS item
     item_id uuid    unique          not null,
     name            varchar(100)    not null,
     description     varchar(500)    not null,
-    category        category        not null,
-    price           decimal         not null
+    category        category        not null
 );
 
 CREATE TABLE IF NOT EXISTS offer
@@ -71,6 +69,7 @@ CREATE TABLE IF NOT EXISTS offer
     publication_date    timestamp not null,
     offer_type          offer_type not null,
     shipment_type       shipment_type not null,
+    price               decimal         not null,
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item (item_id),
     CONSTRAINT fk_client FOREIGN KEY (seller_id) REFERENCES client (client_id)
 );

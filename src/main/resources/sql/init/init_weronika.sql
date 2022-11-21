@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS user
     first_name varchar(50)                        not null,
     last_name  varchar(50)                        not null,
     birth_date timestamp                          not null,
+    created_at timestamp                          not null,
     gender     ENUM ('MALE', 'FEMALE', 'UNKNOWN') not null,
     role       ENUM ('USER', 'ADMIN')             not null,
     address_id VARCHAR(36)                        not null,
