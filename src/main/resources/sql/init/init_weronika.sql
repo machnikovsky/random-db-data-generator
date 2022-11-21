@@ -4,25 +4,30 @@ CREATE TABLE IF NOT EXISTS address
     city        varchar(50)        not null,
     number      int                not null,
     street      varchar(50)        not null,
-    postal_code varchar(5)         not null
+    postal_code varchar(5)         not null,
+    voivodeship ENUM ('DOLNOSLASKIE',
+        'KUJAWSKOPOMORSKIE',
+        'LUBELSKIE',
+        'LUBUSKIE',
+        'LODZKIE',
+        'MALOPOLSKIE',
+        'MAZOWIECKIE',
+        'OPOLSKIE',
+        'PODKARPACKIE',
+        'PODLASKIE',
+        'POMORSKIE',
+        'SLASKIE',
+        'SWIETOKRZYSKIE',
+        'WARMINSKOMAZURSKIE',
+        'WIELKOPOLSKIE',
+        'ZACHODNIOPOMORSKIE')      not null
 );
 
 CREATE TABLE IF NOT EXISTS item
 (
     item_id  VARCHAR(36) unique                                         not null,
     name     varchar(100)                                               not null,
-    category ENUM ('DOM', 'ELEKTRONIKA', 'JEDZENIE', 'UBRANIA', 'INNE') not null,
-    price    decimal                                                    not null
-);
-
-CREATE TABLE IF NOT EXISTS recommendation
-(
-    recommendation_id VARCHAR(36) unique not null,
-    item_id           VARCHAR(36)        not null,
-    text              varchar(100)       not null,
-    showed_count      int                not null,
-    clicked_count     int                not null,
-    CONSTRAINT fk_recommendation_item FOREIGN KEY (item_id) REFERENCES item (item_id)
+    category ENUM ('DOM', 'ELEKTRONIKA', 'JEDZENIE', 'UBRANIA', 'INNE') not null
 );
 
 CREATE TABLE IF NOT EXISTS user
@@ -33,11 +38,23 @@ CREATE TABLE IF NOT EXISTS user
     password   varchar(50)                        not null,
     first_name varchar(50)                        not null,
     last_name  varchar(50)                        not null,
-    age        int                                not null,
+    birth_date timestamp                          not null,
     gender     ENUM ('MALE', 'FEMALE', 'UNKNOWN') not null,
     role       ENUM ('USER', 'ADMIN')             not null,
     address_id VARCHAR(36)                        not null,
     CONSTRAINT fk_user_address FOREIGN KEY (address_id) REFERENCES address (address_id)
+);
+
+CREATE TABLE IF NOT EXISTS recommendation
+(
+    recommendation_id VARCHAR(36) unique not null,
+    item_id           VARCHAR(36)        not null,
+    text              varchar(100)       not null,
+    showed_count      int                not null,
+    clicked_count     int                not null,
+    user_id           VARCHAR(36)        not null,
+    CONSTRAINT fk_recommendation_item FOREIGN KEY (item_id) REFERENCES item (item_id),
+    CONSTRAINT fk_recommendation_user FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS offer
@@ -47,6 +64,7 @@ CREATE TABLE IF NOT EXISTS offer
     description varchar(1000)               not null,
     status      ENUM ('ACTIVE', 'SOLD_OUT') not null,
     item_id     VARCHAR(36)                 not null,
+    price       decimal                     not null,
     CONSTRAINT fk_offer_seller FOREIGN KEY (seller_id) REFERENCES user (user_id),
     CONSTRAINT fk_offer_item FOREIGN KEY (item_id) REFERENCES item (item_id)
 );

@@ -13,7 +13,8 @@ case class Recommendation(
     itemId: UUID,
     text: String,
     showedCount: Int,
-    clickedCount: Int
+    clickedCount: Int,
+    userId: UUID
 )
 
 object Recommendation extends Table[Recommendation] {
@@ -24,7 +25,7 @@ object Recommendation extends Table[Recommendation] {
     text             <- Generation.stringOfNCharsGen(20)
     showedCount      <- Generation.numFromTo(0, 100000)
     clickedCount     <- Generation.numFromTo(0, showedCount)
-  } yield Recommendation(recommendationId, Item.getRandomRow.itemId, text, showedCount, clickedCount)
+  } yield Recommendation(recommendationId, Item.getRandomRow.itemId, text, showedCount, clickedCount, User.getRandomRow.userId)
 
   override def accessFields(recommendation: Recommendation): Iterator[String] = recommendation.productElementNames
   override def accessValues(recommendation: Recommendation): Iterator[Any]    = recommendation.productIterator

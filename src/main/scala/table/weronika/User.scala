@@ -3,12 +3,13 @@ package table.weronika
 
 import generationUtil.Generation
 import table.Table
-import table.weronika.User.{ Gender, Role }
+import table.weronika.User.{Gender, Role}
 
 import enumeratum.EnumEntry.Uppercase
 import enumeratum._
 import org.scalacheck.Gen
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 final case class User(userId: UUID,
@@ -17,7 +18,7 @@ final case class User(userId: UUID,
                       password: String,
                       firstName: String,
                       lastName: String,
-                      age: Int,
+                      birthDate: LocalDateTime,
                       gender: Gender,
                       role: Role,
                       addressId: UUID)
@@ -25,11 +26,14 @@ final case class User(userId: UUID,
 object User extends Table[User] {
 
   sealed trait Gender extends EnumEntry with Uppercase
+
   object Gender extends Enum[Gender] {
     val values: IndexedSeq[Gender] = findValues
 
-    final case object MALE    extends Gender
-    final case object FEMALE  extends Gender
+    final case object MALE extends Gender
+
+    final case object FEMALE extends Gender
+
     final case object UNKNOWN extends Gender
   }
 
@@ -38,35 +42,37 @@ object User extends Table[User] {
   object Role extends Enum[Role] {
     val values: IndexedSeq[Role] = findValues
 
-    final case object USER  extends Role
+    final case object USER extends Role
+
     final case object ADMIN extends Role
   }
 
   override val tableName: String = "user"
   override val generator: Gen[User] =
     for {
-      userId    <- Generation.uuidGen
-      username  <- Generation.stringOfNCharsGen(10)
-      email     <- Generation.stringOfNCharsGen(10)
-      password  <- Generation.stringOfNCharsGen(10)
+      userId <- Generation.uuidGen
+      username <- Generation.stringOfNCharsGen(10)
+      email <- Generation.stringOfNCharsGen(10)
+      password <- Generation.stringOfNCharsGen(10)
       firstName <- Generation.firstNameGen
-      lastName  <- Generation.lastNameGen
-      age       <- Generation.numFromTo(18, 120)
-      gender    <- Generation.enumGen(Gender)
-      role      <- Generation.enumGen(Role)
+      lastName <- Generation.lastNameGen
+      birthDate <- Generation.timeFromToGen(120, 18)
+      gender <- Generation.enumGen(Gender)
+      role <- Generation.enumGen(Role)
     } yield
       User(userId,
-           username,
-           email,
-           password,
-           firstName.value,
-           lastName.value,
-           age,
-           gender,
-           role,
-           Address.getRandomRow.addressId)
+        username,
+        email,
+        password,
+        firstName.value,
+        lastName.value,
+        birthDate,
+        gender,
+        role,
+        Address.getRandomRow.addressId)
 
   override def accessFields(user: User): Iterator[String] = user.productElementNames
-  override def accessValues(user: User): Iterator[Any]    = user.productIterator
+
+  override def accessValues(user: User): Iterator[Any] = user.productIterator
 
 }
