@@ -1,9 +1,10 @@
 package pl.machnikovsky.generator
-package table
+package table.kuba
 
 import generationUtil.Generation
+import table.Table
 
-import faker.name.{ FirstName, LastName }
+import faker.name.{FirstName, LastName}
 import org.scalacheck.Gen
 
 import java.time.LocalDateTime

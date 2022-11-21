@@ -1,7 +1,8 @@
 package pl.machnikovsky.generator
-package table
+package table.weronika
 
 import generationUtil.Generation
+import table.Table
 
 import org.scalacheck.Gen
 
@@ -10,21 +11,19 @@ import java.util.UUID
 
 case class Return(
     returnId: UUID,
-    accountId: UUID,
-    offerId: UUID,
-    quantity: Int,
-    date: LocalDateTime
+    date: LocalDateTime,
+    numberOfItems: Int,
+    purchaseId: UUID,
 )
 
 object Return extends Table[Return] {
 
   override val tableName: String = "return"
-  //override val rowsTogenerate: Long = 20_000L
   override val generator: Gen[Return] = for {
-    returnId <- Generation.uuidGen
-    quantity <- Generation.numFromTo(0, 50)
-    date     <- Generation.timeFromGen(15)
-  } yield Return(returnId, Account.getRandomRow.accountId, Offer.getRandomRow.offerId, quantity, date)
+    returnId      <- Generation.uuidGen
+    date          <- Generation.timeFromGen(15)
+    numberOfItems <- Generation.numFromTo(0, 50)
+  } yield Return(returnId, date, numberOfItems, Purchase.getRandomRow.purchaseId)
 
   override def accessFields(ret: Return): Iterator[String] = ret.productElementNames
   override def accessValues(ret: Return): Iterator[Any]    = ret.productIterator

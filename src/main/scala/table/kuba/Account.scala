@@ -1,7 +1,8 @@
 package pl.machnikovsky.generator
-package table
+package table.kuba
 
-import generationUtil.{DbInsert, Generation}
+import generationUtil.Generation
+import table.Table
 
 import org.scalacheck.Gen
 

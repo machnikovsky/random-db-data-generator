@@ -1,8 +1,9 @@
 package pl.machnikovsky.generator
-package table
+package table.kuba
 
 import generationUtil.Generation
-import table.Offer.{ OfferType, ShipmentType }
+import table.Table
+import table.kuba.Offer.{OfferType, ShipmentType}
 
 import enumeratum.EnumEntry.Uppercase
 import enumeratum._

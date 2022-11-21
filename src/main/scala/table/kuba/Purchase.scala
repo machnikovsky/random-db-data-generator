@@ -1,8 +1,9 @@
 package pl.machnikovsky.generator
-package table
+package table.kuba
 
 import generationUtil.Generation
-import table.Purchase.PaymentMethod
+import table.Table
+import table.kuba.Purchase.PaymentMethod
 
 import enumeratum.EnumEntry.Uppercase
 import enumeratum.{Enum, EnumEntry}

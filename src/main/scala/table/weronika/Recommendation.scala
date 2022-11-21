@@ -1,7 +1,8 @@
 package pl.machnikovsky.generator
-package table
+package table.weronika
 
 import generationUtil.Generation
+import table.Table
 
 import org.scalacheck.Gen
 
@@ -9,9 +10,8 @@ import java.util.UUID
 
 case class Recommendation(
     recommendationId: UUID,
-    accountId: UUID,
-    offerId: UUID,
-    content: String,
+    itemId: UUID,
+    text: String,
     showedCount: Int,
     clickedCount: Int
 )
@@ -19,20 +19,13 @@ case class Recommendation(
 object Recommendation extends Table[Recommendation] {
 
   override val tableName: String = "recommendation"
-  //override val rowsTogenerate: Long = 10_000L
   override val generator: Gen[Recommendation] = for {
     recommendationId <- Generation.uuidGen
-    content          <- Generation.stringOfNCharsGen(30)
+    text             <- Generation.stringOfNCharsGen(20)
     showedCount      <- Generation.numFromTo(0, 100000)
     clickedCount     <- Generation.numFromTo(0, showedCount)
-  } yield
-    Recommendation(recommendationId,
-                   Account.getRandomRow.accountId,
-                   Offer.getRandomRow.offerId,
-                   content,
-                   showedCount,
-                   clickedCount)
+  } yield Recommendation(recommendationId, Item.getRandomRow.itemId, text, showedCount, clickedCount)
 
   override def accessFields(recommendation: Recommendation): Iterator[String] = recommendation.productElementNames
-  override def accessValues(recommendation: Recommendation): Iterator[Any] = recommendation.productIterator
+  override def accessValues(recommendation: Recommendation): Iterator[Any]    = recommendation.productIterator
 }

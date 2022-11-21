@@ -1,8 +1,9 @@
 package pl.machnikovsky.generator
-package table
+package table.kuba
 
 import generationUtil.Generation
-import table.ShoppingCart.Stage
+import table.Table
+import table.kuba.ShoppingCart.Stage
 
 import enumeratum.EnumEntry.Uppercase
 import enumeratum._
