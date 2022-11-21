@@ -2,13 +2,13 @@ package pl.machnikovsky.generator
 package table
 
 import generationUtil.DbInsertSyntax.DbInsertOps
-import generationUtil.{ DbInsert, StreamUtils }
-import table.Table.{ camelToSnake, toCamelIfNotEnum }
+import generationUtil.{DbInsert, StreamUtils}
+import table.Table.{camelToSnake, toCamelIfNotEnum}
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import enumeratum.EnumEntry
-import fs2.io.file.{ Files, Path }
+import fs2.io.file.{Files, Path}
 import fs2.text
 import org.scalacheck.Gen
 import org.scalacheck.rng.Seed
@@ -18,8 +18,9 @@ import scala.collection.mutable.ListBuffer
 
 trait Table[A] {
 
-  lazy val tableDirectory: Path = Path("src/main/resources/sql/data/weronika")
-  lazy val filePath: Path       = tableDirectory / s"${tableName}_weronika.sql"
+  final lazy val suffix: String = "kuba"
+  lazy val tableDirectory: Path = Path(s"src/main/resources/sql/data/$suffix")
+  lazy val filePath: Path       = tableDirectory / s"${tableName}_$suffix.sql"
   lazy val inMemoryList: ListBuffer[A] = {
     val lb = ListBuffer(generator.pureApply(Gen.Parameters.default, Seed.random()))
     (for {
@@ -41,7 +42,7 @@ trait Table[A] {
   }
 
   val tableName: String
-  val rowsToGenerate: Long = 100L
+  val rowsToGenerate: Long = 100_000L
   val generator: Gen[A]
 
   implicit val dbInsert: DbInsert[A] = (a: A) =>
