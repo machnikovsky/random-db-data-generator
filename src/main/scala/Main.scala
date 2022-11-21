@@ -14,8 +14,8 @@ object Main extends IOApp {
     weronika.Address,
     weronika.User,
     weronika.Item,
-    weronika.Offer,
     weronika.Purchase,
+    weronika.Offer,
     weronika.Recommendation,
     weronika.Return,
   )

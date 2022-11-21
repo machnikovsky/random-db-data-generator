@@ -18,9 +18,27 @@ import scala.collection.mutable.ListBuffer
 
 trait Table[A] {
 
-  final val tableDirectory: Path = Path("src/main/resources/sql/data/tmp_weronika")
-  final lazy val filePath: Path  = tableDirectory / s"$tableName.sql"
-  lazy val inMemoryList: ListBuffer[A] = ListBuffer(generator.pureApply(Gen.Parameters.default, Seed.random()))
+  lazy val tableDirectory: Path = Path("src/main/resources/sql/data/weronika")
+  lazy val filePath: Path       = tableDirectory / s"${tableName}_weronika.sql"
+  lazy val inMemoryList: ListBuffer[A] = {
+    val lb = ListBuffer(generator.pureApply(Gen.Parameters.default, Seed.random()))
+    (for {
+      _ <- IO.println(s"working for $tableName!")
+      _ <- Files[IO].createDirectories(tableDirectory)
+      _ <- Files[IO].deleteIfExists(filePath)
+      _ <- StreamUtils.createFileIfNotExists(filePath)
+      _ <- fs2.Stream
+        .emits(lb)
+        .head
+        .map(account => account.toDbInsert)
+        .intersperse("\n")
+        .through(text.utf8.encode)
+        .through(Files[IO].writeAll(filePath))
+        .compile
+        .drain
+    } yield ()).unsafeRunSync()
+    lb
+  }
 
   val tableName: String
   val rowsToGenerate: Long = 100L
@@ -38,9 +56,14 @@ trait Table[A] {
 
 object Table {
 
+  import java.time.LocalDateTime
+  import java.time.format.DateTimeFormatter
+
+  val fmt: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")
   def toCamelIfNotEnum(field: Any): String = field match {
-    case n: EnumEntry => s"'${n.toString}'"
-    case n            => camelToSnake(s"'${camelToSnake(n.toString)}'")
+    case n: EnumEntry     => s"'${n.toString}'"
+    case n: LocalDateTime => s"'${n.format(fmt)}'"
+    case n                => camelToSnake(s"'${camelToSnake(n.toString)}'")
   }
   def camelToSnake(name: String): String = {
     @tailrec

@@ -3,11 +3,10 @@ package table.weronika
 
 import generationUtil.Generation
 import table.Table
-import table.kuba.Item
 import table.weronika.Offer.Status
 
 import enumeratum.EnumEntry.Uppercase
-import enumeratum.{Enum, EnumEntry}
+import enumeratum.{ Enum, EnumEntry }
 import org.scalacheck.Gen
 
 import java.util.UUID
@@ -43,6 +42,5 @@ object Offer extends Table[Offer] {
   } yield Offer(offerId, User.getRandomRow.userId, description, status, price, Item.getRandomRow.itemId)
 
   override def accessFields(offer: Offer): Iterator[String] = offer.productElementNames
-
-  override def accessValues(offer: Offer): Iterator[Any] = offer.productIterator
+  override def accessValues(offer: Offer): Iterator[Any]    = offer.productIterator
 }

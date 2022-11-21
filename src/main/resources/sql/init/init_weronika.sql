@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS purchase
 (
     purchase_id     VARCHAR(36) unique                             not null,
     payment_method  ENUM ('BLIK', 'CASH', 'CARD')                  not null,
-    date            timestamp                                      not null,
+    date            datetime                                      not null,
     shipping_method ENUM ('PACZKOMAT', 'DPD', 'POCZTA')            not null,
     purchase_status ENUM ('IN_PROGRESS', 'CANCELLED', 'DELIVERED') not null,
     buyer_id        VARCHAR(36)                                    not null,
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS purchase
 CREATE TABLE IF NOT EXISTS `return`
 (
     return_id       VARCHAR(36) unique not null,
-    date            timestamp          not null,
+    date            datetime          not null,
     number_of_items int                not null,
     purchase_id     VARCHAR(36)        not null,
     CONSTRAINT fk_purchase FOREIGN KEY (purchase_id) REFERENCES purchase (purchase_id)
