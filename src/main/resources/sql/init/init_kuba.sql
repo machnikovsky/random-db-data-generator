@@ -1,10 +1,31 @@
+CREATE TYPE category AS ENUM ('OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE');
+CREATE TYPE offer_type AS ENUM ('KUP_TERAZ', 'LICYTACJA', 'OGLOSZENIE');
+CREATE TYPE shipment_type AS ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY');
+CREATE TYPE stage AS ENUM ('PUSTY', 'ZAPELNIONY', 'PLATNOSC');
+CREATE TYPE payment_method AS ENUM ('CREDIT', 'CARD');
+CREATE TYPE gender AS ENUM ('MALE', 'FEMALE', 'UNKNOWN');
+CREATE TYPE voivodeship AS ENUM ('DOLNOSLASKIE', 'KUJAWSKOPOMORSKIE', 'LUBELSKIE', 'LUBUSKIE', 'LODZKIE', 'MALOPOLSKIE', 'MAZOWIECKIE', 'OPOLSKIE', 'PODKARPACKIE', 'PODLASKIE', 'POMORSKIE', 'SLASKIE', 'SWIETOKRZYSKIE', 'WARMINSKOMAZURSKIE', 'WIELKOPOLSKIE', 'ZACHODNIOPOMORSKIE');
+
+CREATE TABLE IF NOT EXISTS address
+(
+    address_id  uuid unique not null,
+    city        varchar(50) not null,
+    number      int         not null,
+    street      varchar(50) not null,
+    postal_code varchar(5)  not null,
+    voivodeship voivodeship not null
+);
+
 CREATE TABLE IF NOT EXISTS client
 (
     client_id  uuid unique not null,
+    address_id uuid        not null,
     first_name varchar(50) not null,
     last_name  varchar(50) not null,
+    gender     gender      not null,
     pesel      varchar(11) not null,
-    birth_date timestamp   not null
+    birth_date timestamp   not null,
+    CONSTRAINT fk_address FOREIGN KEY (address_id) REFERENCES address (address_id)
 );
 
 CREATE TABLE IF NOT EXISTS account
@@ -19,13 +40,6 @@ CREATE TABLE IF NOT EXISTS account
     created_at          timestamp   not null,
     CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client (client_id)
 );
-
-CREATE TYPE category AS ENUM ('OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE');
-CREATE TYPE offer_type AS ENUM ('KUP_TERAZ', 'LICYTACJA', 'OGLOSZENIE');
-CREATE TYPE shipment_type AS ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY');
-CREATE TYPE stage AS ENUM ('PUSTY', 'ZAPELNIONY', 'PLATNOSC');
-CREATE TYPE payment_method AS ENUM ('CREDIT', 'CARD');
-
 
 CREATE TABLE IF NOT EXISTS item
 (
