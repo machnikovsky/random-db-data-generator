@@ -1,5 +1,5 @@
 # generated files
-src/main/resources/sql
+src/main/resources/sql/data
 
 # bloop and metals
 .bloop
