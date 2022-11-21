@@ -19,6 +19,7 @@ final case class User(userId: UUID,
                       firstName: String,
                       lastName: String,
                       birthDate: LocalDateTime,
+                      createdAt: LocalDateTime,
                       gender: Gender,
                       role: Role,
                       addressId: UUID)
@@ -57,6 +58,7 @@ object User extends Table[User] {
       firstName <- Generation.firstNameGen
       lastName <- Generation.lastNameGen
       birthDate <- Generation.timeFromToGen(120, 18)
+      createdAt <- Generation.timeFromGen(15)
       gender <- Generation.enumGen(Gender)
       role <- Generation.enumGen(Role)
     } yield
@@ -67,6 +69,7 @@ object User extends Table[User] {
         firstName.value,
         lastName.value,
         birthDate,
+        createdAt,
         gender,
         role,
         Address.getRandomRow.addressId)

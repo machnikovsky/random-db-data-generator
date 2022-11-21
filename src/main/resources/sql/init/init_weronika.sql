@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS user
     first_name varchar(50)                        not null,
     last_name  varchar(50)                        not null,
     birth_date timestamp                          not null,
+    created_at timestamp                          not null,
     gender     ENUM ('MALE', 'FEMALE', 'UNKNOWN') not null,
     role       ENUM ('USER', 'ADMIN')             not null,
     address_id VARCHAR(36)                        not null,
@@ -73,22 +74,24 @@ CREATE TABLE IF NOT EXISTS purchase
 (
     purchase_id     VARCHAR(36) unique                             not null,
     payment_method  ENUM ('BLIK', 'CASH', 'CARD')                  not null,
-    date            datetime                                      not null,
+    date            datetime                                       not null,
     shipping_method ENUM ('PACZKOMAT', 'DPD', 'POCZTA')            not null,
     purchase_status ENUM ('IN_PROGRESS', 'CANCELLED', 'DELIVERED') not null,
     buyer_id        VARCHAR(36)                                    not null,
     seller_id       VARCHAR(36)                                    not null,
     address_id      VARCHAR(36)                                    not null,
+    offer_id        VARCHAR(36)                                    not null,
+    quantity        int                                            not null,
     CONSTRAINT fk_buyer FOREIGN KEY (buyer_id) REFERENCES user (user_id),
     CONSTRAINT fk_purchase_seller FOREIGN KEY (seller_id) REFERENCES user (user_id),
-    CONSTRAINT fk_purchase_address FOREIGN KEY (address_id) REFERENCES address (address_id)
+    CONSTRAINT fk_purchase_address FOREIGN KEY (address_id) REFERENCES address (address_id),
+    CONSTRAINT fk_purchase_offer FOREIGN KEY (purchase_id) REFERENCES purchase (purchase_id)
 );
-
 
 CREATE TABLE IF NOT EXISTS `return`
 (
     return_id       VARCHAR(36) unique not null,
-    date            datetime          not null,
+    date            datetime           not null,
     number_of_items int                not null,
     purchase_id     VARCHAR(36)        not null,
     CONSTRAINT fk_purchase FOREIGN KEY (purchase_id) REFERENCES purchase (purchase_id)
