@@ -54,10 +54,12 @@ CREATE TABLE IF NOT EXISTS offer
 (
     offer_id         uuid unique   not null,
     item_id          uuid          not null,
+    seller_id        uuid          not null,
     publication_date timestamp     not null,
     offer_type       offer_type    not null,
     shipment_type    shipment_type not null,
-    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item (item_id)
+    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item (item_id),
+    CONSTRAINT fk_seller FOREIGN KEY (seller_id) REFERENCES account (account_id)
 );
 
 CREATE TABLE IF NOT EXISTS recommendation

@@ -3,7 +3,7 @@ package table.kuba
 
 import generationUtil.Generation
 import table.Table
-import table.kuba.Offer.{OfferType, ShipmentType}
+import table.kuba.Offer.{ OfferType, ShipmentType }
 
 import enumeratum.EnumEntry.Uppercase
 import enumeratum._
@@ -15,6 +15,7 @@ import java.util.UUID
 case class Offer(
     offerId: UUID,
     itemId: UUID,
+    sellerId: UUID,
     publicationDate: LocalDateTime,
     shipmentType: ShipmentType,
     offerType: OfferType
@@ -52,7 +53,8 @@ object Offer extends Table[Offer] {
     publicationDate <- Generation.timeFromGen(15)
     shipmentType    <- Generation.enumGen(ShipmentType)
     offerType       <- Generation.enumGen(OfferType)
-  } yield Offer(offerId, Item.getRandomRow.itemId, publicationDate, shipmentType, offerType)
+  } yield
+    Offer(offerId, Item.getRandomRow.itemId, Account.getRandomRow.accountId, publicationDate, shipmentType, offerType)
 
   override def accessFields(offer: Offer): Iterator[String] = offer.productElementNames
   override def accessValues(offer: Offer): Iterator[Any]    = offer.productIterator

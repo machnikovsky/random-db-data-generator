@@ -24,7 +24,6 @@ trait Table[A] {
   lazy val inMemoryList: ListBuffer[A] = {
     val lb = ListBuffer(generator.pureApply(Gen.Parameters.default, Seed.random()))
     (for {
-      _ <- IO.println(s"working for $tableName!")
       _ <- Files[IO].createDirectories(tableDirectory)
       _ <- Files[IO].deleteIfExists(filePath)
       _ <- StreamUtils.createFileIfNotExists(filePath)
@@ -42,7 +41,7 @@ trait Table[A] {
   }
 
   val tableName: String
-  val rowsToGenerate: Long = 100_000L
+  val rowsToGenerate: Long = 10_000L
   val generator: Gen[A]
 
   implicit val dbInsert: DbInsert[A] = (a: A) =>
