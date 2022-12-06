@@ -49,6 +49,9 @@ object User extends Table[User] {
   }
 
   override val tableName: String = "user"
+
+  override val rowsToGenerate: Long = 50_000L
+
   override val generator: Gen[User] =
     for {
       userId <- Generation.uuidGen

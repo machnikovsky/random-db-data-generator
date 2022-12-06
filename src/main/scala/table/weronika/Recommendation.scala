@@ -20,6 +20,9 @@ case class Recommendation(
 object Recommendation extends Table[Recommendation] {
 
   override val tableName: String = "recommendation"
+
+  override val rowsToGenerate: Long = 500_000L
+
   override val generator: Gen[Recommendation] = for {
     recommendationId <- Generation.uuidGen
     text             <- Generation.stringOfNCharsGen(20)

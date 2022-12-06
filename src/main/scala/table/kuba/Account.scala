@@ -21,7 +21,7 @@ final case class Account(accountId: UUID,
 object Account extends Table[Account] {
 
   override val tableName: String = "account"
-  //override val rowsTogenerate: Long = 100_000L
+  //override val rowstogenerate: Long = 100_000L
   override val generator: Gen[Account] =
     for {
       accountId         <- Generation.uuidGen

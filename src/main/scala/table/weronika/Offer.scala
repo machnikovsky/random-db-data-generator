@@ -34,6 +34,9 @@ object Offer extends Table[Offer] {
   }
 
   override val tableName: String = "offer"
+
+  override val rowsToGenerate: Long = 1_000_000L
+
   override val generator: Gen[Offer] = for {
     offerId <- Generation.uuidGen
     description <- Generation.stringOfNCharsGen(100)

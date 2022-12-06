@@ -15,12 +15,13 @@ import org.scalacheck.rng.Seed
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
+import scala.math.BigDecimal.RoundingMode
 
 trait Table[A] {
 
-  final lazy val suffix: String = "kuba"
+  final lazy val suffix: String = "weronika"
   lazy val tableDirectory: Path = Path(s"src/main/resources/sql/data/$suffix")
-  lazy val filePath: Path       = tableDirectory / s"${tableName}_$suffix.sql"
+  lazy val filePath: Path = tableDirectory / s"${tableName}_$suffix.sql"
   lazy val inMemoryList: ListBuffer[A] = {
     val lb = ListBuffer(generator.pureApply(Gen.Parameters.default, Seed.random()))
     (for {
@@ -49,9 +50,12 @@ trait Table[A] {
       s"values (${accessValues(a).toList.map(toCamelIfNotEnum).mkString(", ")});"
 
   def accessFields(a: A): Iterator[String]
+
   def accessValues(a: A): Iterator[Any]
+
   def generateData: IO[Unit] = StreamUtils.generateData(this)
-  def getRandomRow: A        = inMemoryList.head
+
+  def getRandomRow: A = inMemoryList.head
 }
 
 object Table {
@@ -60,18 +64,21 @@ object Table {
   import java.time.format.DateTimeFormatter
 
   val fmt: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss")
+
   def toCamelIfNotEnum(field: Any): String = field match {
-    case n: EnumEntry     => s"'${n.toString}'"
+    case n: EnumEntry => s"'${n.toString}'"
     case n: LocalDateTime => s"'${n.format(fmt)}'"
-    case n                => camelToSnake(s"'${camelToSnake(n.toString)}'")
+    case n: BigDecimal => s"'${n.setScale(2, RoundingMode.CEILING)}'"
+    case n => camelToSnake(s"'${camelToSnake(n.toString)}'")
   }
+
   def camelToSnake(name: String): String = {
     @tailrec
     def go(accDone: List[Char], acc: List[Char]): List[Char] = acc match {
-      case Nil                                                        => accDone
+      case Nil => accDone
       case a :: b :: c :: tail if a.isUpper && b.isUpper && c.isLower => go(accDone ++ List(a, '_', b, c), tail)
-      case a :: b :: tail if a.isLower && b.isUpper                   => go(accDone ++ List(a, '_', b), tail)
-      case a :: tail                                                  => go(accDone :+ a, tail)
+      case a :: b :: tail if a.isLower && b.isUpper => go(accDone ++ List(a, '_', b), tail)
+      case a :: tail => go(accDone :+ a, tail)
     }
 
     go(Nil, name.toList).mkString.toLowerCase

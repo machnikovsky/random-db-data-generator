@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS user
     password   varchar(50)                        not null,
     first_name varchar(50)                        not null,
     last_name  varchar(50)                        not null,
-    birth_date timestamp                          not null,
-    created_at timestamp                          not null,
+    birth_date datetime                          not null,
+    created_at datetime                          not null,
     gender     ENUM ('MALE', 'FEMALE', 'UNKNOWN') not null,
     role       ENUM ('USER', 'ADMIN')             not null,
     address_id VARCHAR(36)                        not null,
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS purchase
     CONSTRAINT fk_buyer FOREIGN KEY (buyer_id) REFERENCES user (user_id),
     CONSTRAINT fk_purchase_seller FOREIGN KEY (seller_id) REFERENCES user (user_id),
     CONSTRAINT fk_purchase_address FOREIGN KEY (address_id) REFERENCES address (address_id),
-    CONSTRAINT fk_purchase_offer FOREIGN KEY (purchase_id) REFERENCES purchase (purchase_id)
+    CONSTRAINT fk_purchase_offer FOREIGN KEY (offer_id) REFERENCES offer (offer_id)
 );
 
 CREATE TABLE IF NOT EXISTS `return`
