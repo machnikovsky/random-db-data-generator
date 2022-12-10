@@ -33,7 +33,7 @@ object Client extends Table[Client] {
   }
 
   override val tableName: String = "client"
-  //override val rowsTogenerate: Long = 100_000L
+  //override val rowsToGenerate: Long = 50_000L
   override val generator: Gen[Client] = for {
     clientId  <- Generation.uuidGen
     firstName <- Generation.firstNameGen

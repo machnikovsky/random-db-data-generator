@@ -20,7 +20,7 @@ case class Return(
 object Return extends Table[Return] {
 
   override val tableName: String = "return"
-  //override val rowsTogenerate: Long = 20_000L
+  //override val rowsToGenerate: Long = 20_000L
   override val generator: Gen[Return] = for {
     returnId <- Generation.uuidGen
     quantity <- Generation.numFromTo(0, 50)

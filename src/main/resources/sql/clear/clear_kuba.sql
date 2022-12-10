@@ -3,9 +3,9 @@ drop table if exists return;
 drop table if exists cart_offer;
 drop table if exists shopping_cart;
 drop table if exists recommendation;
+drop table if exists offer;
 drop table if exists account;
 drop table if exists client;
-drop table if exists offer;
 drop table if exists item;
 drop table if exists address;
 

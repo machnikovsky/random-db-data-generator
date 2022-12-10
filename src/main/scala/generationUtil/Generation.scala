@@ -14,7 +14,7 @@ object Generation {
   val uuidGen: Gen[UUID]   = Gen.uuid
   val firstNameGen: Gen[FirstName]                 = Arbitrary.arbitrary[FirstName]
   val lastNameGen: Gen[LastName]                   = Arbitrary.arbitrary[LastName]
-  val priceGen: Gen[BigDecimal] = Gen.choose(BigDecimal.decimal(1.00), BigDecimal.decimal(1_000_000_000))
+  val priceGen: Gen[BigDecimal] = Gen.choose(BigDecimal.decimal(1).setScale(2), BigDecimal.decimal(1000).setScale(2))
 
   def timeFromToGen(from: Int, to: Int): Gen[LocalDateTime] = Gen.choose(LocalDateTime.now().minusYears(from), LocalDateTime.now().minusYears(to))
   def timeFromGen(from: Int): Gen[LocalDateTime] = Gen.choose(LocalDateTime.now().minusYears(from), LocalDateTime.now())

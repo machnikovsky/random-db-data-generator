@@ -18,7 +18,7 @@ case class CartOffer(
 object CartOffer extends Table[CartOffer] {
 
   override val tableName: String = "cart_offer"
-  //override val rowsTogenerate: Long = 10_000L
+  //override val rowsToGenerate: Long = 20_000L
   override val generator: Gen[CartOffer] = for {
     cartOfferId <- Generation.uuidGen
     quantity    <- Generation.numFromTo(0, 50)

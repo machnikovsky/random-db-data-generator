@@ -30,7 +30,7 @@ object ShoppingCart extends Table[ShoppingCart] {
   }
 
   override val tableName: String = "shopping_cart"
-  //override val rowsTogenerate: Long = 1_000_000L
+  //override val rowsToGenerate: Long = 50_000L
   override val generator: Gen[ShoppingCart] = for {
     shoppingCartId <- Generation.uuidGen
     stage          <- Generation.enumGen(Stage)

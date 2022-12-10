@@ -15,10 +15,11 @@ import org.scalacheck.rng.Seed
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
+import scala.math.BigDecimal.RoundingMode
 
 trait Table[A] {
 
-  final lazy val suffix: String = "kuba"
+  final lazy val suffix: String = "kuba_tmp_bigdecimal"
   lazy val tableDirectory: Path = Path(s"src/main/resources/sql/data/$suffix")
   lazy val filePath: Path       = tableDirectory / s"${tableName}_$suffix.sql"
   lazy val inMemoryList: ListBuffer[A] = {
@@ -63,6 +64,7 @@ object Table {
   def toCamelIfNotEnum(field: Any): String = field match {
     case n: EnumEntry     => s"'${n.toString}'"
     case n: LocalDateTime => s"'${n.format(fmt)}'"
+    case n: BigDecimal => s"'${n.setScale(2, RoundingMode.CEILING)}'"
     case n                => camelToSnake(s"'${camelToSnake(n.toString)}'")
   }
   def camelToSnake(name: String): String = {
