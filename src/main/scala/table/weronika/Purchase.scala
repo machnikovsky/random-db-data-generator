@@ -55,6 +55,9 @@ object Purchase extends Table[Purchase] {
   }
 
   override val tableName: String = "purchase"
+
+  override val rowsToGenerate: Long = 400_000L
+
   override val generator: Gen[Purchase] = for {
     purchaseId     <- Generation.uuidGen
     paymentMethod  <- Generation.enumGen(PaymentMethod)

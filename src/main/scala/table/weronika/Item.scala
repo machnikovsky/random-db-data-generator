@@ -38,6 +38,9 @@ object Item extends Table[Item] {
   }
 
   override val tableName = "item"
+
+  override val rowsToGenerate: Long = 200_000L
+
   override val generator: Gen[Item] =
     for {
       itemId <- Generation.uuidGen

@@ -61,6 +61,9 @@ object Address extends Table[Address] {
   }
 
   override val tableName: String = "address"
+
+  override val rowsToGenerate: Long = 50_000L
+
   override val generator: Gen[Address] = for {
     addressId   <- Generation.uuidGen
     city        <- Generation.stringOfNCharsGen(10)
