@@ -2,29 +2,14 @@
 
 CREATE TABLE address
 (
-    address_id  VARCHAR2(40) not null,
+    address_id  VARCHAR2(40) unique not null,
     city        varchar(50)  not null,
-    voivodeship ENUM ('DOLNOSLASKIE',
-        'KUJAWSKOPOMORSKIE',
-        'LUBELSKIE',
-        'LUBUSKIE',
-        'LODZKIE',
-        'MALOPOLSKIE',
-        'MAZOWIECKIE',
-        'OPOLSKIE',
-        'PODKARPACKIE',
-        'PODLASKIE',
-        'POMORSKIE',
-        'SLASKIE',
-        'SWIETOKRZYSKIE',
-        'WARMINSKOMAZURSKIE',
-        'WIELKOPOLSKIE',
-        'ZACHODNIOPOMORSKIE') not null
+    voivodeship varchar(30) not null
 );
 
 CREATE TABLE "date"
 (
-    date_id VARCHAR2(40) not null,
+    date_id VARCHAR2(40) unique not null,
     year    number(4)    not null,
     month   number(2)    not null,
     week    number(2)    not null
@@ -32,34 +17,33 @@ CREATE TABLE "date"
 
 CREATE TABLE category
 (
-    category_id VARCHAR2(40) not null,
-    category    ENUM ( 'OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE') not null
+    category_id VARCHAR2(40) unique not null,
+    category    varchar(30) not null
 );
 
 CREATE TABLE age
 (
-    age_id VARCHAR2(40) not null,
+    age_id VARCHAR2(40) unique not null,
     age    number(3)    not null
 );
 
-CREATE TABLE enagagement
+CREATE TABLE engagement
 (
-    enagagement_id VARCHAR2(40) not null,
-    age            ENUM ('LOW', 'MEDIUM', 'HIGH') not null
+    engagement_id VARCHAR2(40) unique not null,
+    engagement            varchar(20) not null
 );
 
 CREATE TABLE membership_length
 (
-    membership_length_id VARCHAR2(40) not null,
-    membership_length    ENUM ('NEW', 'VERY_LOW', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH') not null
+    membership_length_id VARCHAR2(40) unique not null,
+    membership_length    varchar(20) not null
 );
 
 CREATE TABLE gender
 (
-    gender_id VARCHAR2(40) not null,
-    gender    ENUM ('MALE', 'FEMALE', 'UNKNOWN') not null
+    gender_id VARCHAR2(40) unique not null,
+    gender    varchar(20) not null
 );
-
 
 -- fact table
 
