@@ -47,7 +47,7 @@ CREATE TABLE item
     item_id     VARCHAR2(40) not null,
     name        varchar(100) not null,
     description varchar(500) not null,
-    category    ENUM ( 'OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE') not null
+    category    ENUM ( 'DOM', 'ELEKTRONIKA', 'JEDZENIE', 'OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE') not null
 );
 
 CREATE TABLE offer
@@ -56,8 +56,7 @@ CREATE TABLE offer
     item_id          VARCHAR2(40) not null,
     seller_id        VARCHAR2(40) not null,
     publication_date timestamp    not null,
-    offer_type       ENUM ('KUP_TERAZ', 'LICYTACJA', 'OGLOSZENIE') not null,
-    shipment_type    ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY') not null,
+    shipment_type    ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY', 'DPD') not null,
     price            decimal      not null,
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item (item_id),
     CONSTRAINT fk_client FOREIGN KEY (seller_id) REFERENCES client (client_id)
@@ -81,7 +80,7 @@ CREATE TABLE purchase
     client_id      VARCHAR2(40) not null,
     offer_id       VARCHAR2(40) not null,
     quantity       int          not null,
-    payment_method ENUM ('CREDIT', 'CARD') not null,
+    payment_method ENUM ('BLIK', 'CASH', 'CREDIT', 'CARD') not null,
     date           timestamp    not null,
     CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client (client_id),
     CONSTRAINT fk_offer FOREIGN KEY (offer_id) REFERENCES offer (offer_id)
