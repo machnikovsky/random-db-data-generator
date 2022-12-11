@@ -1,20 +1,20 @@
 -- fucntions
 create or replace function age_to_name(n1 in timestamp)
     return varchar2
-as
-    age_value number;
-    age_name  varchar2;
+    is
+    age_value number(10);
+    age_name  varchar2(20);
 begin
     select months_between(TRUNC(sysdate), cast(n1 as date)) / 12 into age_value from dual;
-    if age_name < 21 then
+    if age_value < 21 then
         age_name := 'YOUNG_ADULT';
-    elsif age_name < 29 then
+    elsif age_value < 29 then
         age_name := 'TWENTIES';
-    elsif age_name < 39 then
+    elsif age_value < 39 then
         age_name := 'THIRTIES';
-    elsif age_name < 49 then
+    elsif age_value < 49 then
         age_name := 'FORTIES';
-    elsif age_name < 70 then
+    elsif age_value < 70 then
         age_name := 'MIDDLE_AGED';
     else
         age_name := 'ELDERLY';
@@ -22,9 +22,10 @@ begin
     return age_name;
 end;
 
+
 create or replace function calculate_engagement(purchases_made in number)
     return varchar2
-as
+    is
     engagement varchar2;
 begin
     if purchases_made < 11 then
@@ -40,60 +41,83 @@ end;
 
 -- dimension tables
 
-CREATE TABLE address (
-                      address_id VARCHAR2(40) unique not null,
-                      city varchar(50)  not null,
-                      voivodeship varchar(30) not null
-    ) as
-select address_id, city, vovoideship
-from zbd_sa.address;
+CREATE TABLE ADDRESS as (select address_id, city, voivodeship
+                         from zbd_sa.address);
 
-CREATE TABLE "date" (
-                     date_id VARCHAR2(40) unique not null,
-                     year number(4)    not null,
-                     month number(2)    not null,
-                     week number(2)    not null
-    ) as
-select purchase_id, extract(year from "date"), extract(month from "date"), to_char("date", 'WW')
-from zbd_sa.purchase;
+CREATE TABLE "DATE" as (select purchase_id                as date_id,
+                               extract(year from "date")  as year,
+                               extract(month from "date") as month,
+                               to_char("date", 'WW')      as week
+                        from zbd_sa.purchase);
+CREATE TABLE category as (select distinct(category) as category_id
+                          from zbd_sa.item);
 
-CREATE TABLE category (
-                       category_id VARCHAR2(40) unique not null,
-                       category varchar(30) not null
-    ) as
-select (select dbms_random.string('A', 36) str from dual), (select distinct(category) from zbd_sa.item);
-
-CREATE TABLE age (
-                  age_id VARCHAR2(40) unique not null,
-                  age VARCHAR2(30)   not null
-    ) as
-select (select dbms_random.string('A', 36) str from dual), age_to_name(date_of_birth)
-from zbd_sa.client;
-
-
-
-CREATE TABLE engagement (
-                         engagement_id VARCHAR2(40) unique not null,
-                         engagement varchar(20)         not null
-    ) as
-select c.client_id, calculate_engagement(select count(*) from zbd_sa.purchase p where p.client_id = c.client_id)
-from zbd_sa.client c;
-
-CREATE
-    TABLE
-    membership_length
+CREATE TABLE age
 (
-    membership_length_id VARCHAR2(40) unique not null,
-    membership_length    varchar(20)         not null
+    age_id varchar2(20) unique not null
 );
+INSERT ALL
+    INTO age (age_id)
+VALUES ('YOUNG_ADULT')
+INTO age (age_id)
+VALUES ('TWENTIES')
+INTO age (age_id)
+VALUES ('THIRTIES')
+INTO age (age_id)
+VALUES ('FOURTIES')
+INTO age (age_id)
+VALUES ('MIDDLE_AGED')
+INTO age (age_id)
+VALUES ('ELDERLY')
+SELECT 1
+FROM DUAL;
 
-CREATE
-    TABLE
-    gender
+CREATE TABLE engagement
 (
-    gender_id VARCHAR2(40) unique not null,
-    gender    varchar(20)         not null
+    engagement_id varchar2(10) unique not null
 );
+INSERT ALL
+    INTO engagement (engagement_id)
+VALUES ('LOW')
+INTO engagement (engagement_id)
+VALUES ('MEDIUM')
+INTO engagement (engagement_id)
+VALUES ('HIGH')
+SELECT 1
+FROM DUAL;
+
+CREATE TABLE membership_length
+(
+    membership_length_id varchar2(10) unique not null
+);
+INSERT ALL
+    INTO membership_length (membership_length_id)
+VALUES ('NEW')
+INTO membership_length (membership_length_id)
+VALUES ('VERY_SHORT')
+INTO membership_length (membership_length_id)
+VALUES ('SHORT')
+INTO membership_length (membership_length_id)
+VALUES ('MEDIUM')
+INTO membership_length (membership_length_id)
+VALUES ('LONG')
+SELECT 1
+FROM DUAL;
+
+CREATE TABLE gender
+(
+    gender_id varchar2(10) unique not null
+);
+INSERT ALL
+    INTO gender (gender_id)
+VALUES ('MALE')
+INTO gender (gender_id)
+VALUES ('FEMALE')
+INTO gender (gender_id)
+VALUES ('UNKNOWN')
+SELECT 1
+FROM DUAL;
+
 
 -- fact table
 
