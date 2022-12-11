@@ -1,4 +1,11 @@
-CREATE TYPE voivodeship AS ENUM ('DOLNOSLASKIE',
+CREATE TABLE address
+(
+    address_id  VARCHAR2(40) not null,
+    city        varchar(50)  not null,
+    number      int          not null,
+    street      varchar(50)  not null,
+    postal_code varchar(5)   not null,
+    voivodeship ENUM ('DOLNOSLASKIE',
         'KUJAWSKOPOMORSKIE',
         'LUBELSKIE',
         'LUBUSKIE',
@@ -13,99 +20,81 @@ CREATE TYPE voivodeship AS ENUM ('DOLNOSLASKIE',
         'SWIETOKRZYSKIE',
         'WARMINSKOMAZURSKIE',
         'WIELKOPOLSKIE',
-        'ZACHODNIOPOMORSKIE');
-
-CREATE TABLE IF NOT EXISTS address
-(
-    address_id      uuid unique not null,
-    city            varchar(50)        not null,
-    number          int                not null,
-    street          varchar(50)        not null,
-    postal_code     varchar(5)         not null,
-    voivodeship     voivodeship        not null
+        'ZACHODNIOPOMORSKIE') not null
 );
 
-CREATE TYPE gender AS ENUM ('MALE', 'FEMALE', 'UNKNOWN');
-CREATE TYPE role AS ENUM ('ADMIN', 'USER');
-
-CREATE TABLE IF NOT EXISTS client
+CREATE TABLE client
 (
-    client_id           uuid unique not null,
-    first_name          varchar(50) not null,
-    last_name           varchar(50) not null,
-    pesel               varchar(11) not null,
-    birth_date          timestamp   not null,
-    login               varchar(50) not null,
-    password            varchar(50) not null,
-    email               varchar(50) not null,
-    gender              gender not null,
-    phone_number        varchar(15) not null,
-    bank_account_number varchar(22) not null,
-    role                role not null,
-    address_id          VARCHAR(36) not null,
-    created_at          timestamp   not null,
+    client_id           VARCHAR2(40) not null,
+    first_name          varchar(50)  not null,
+    last_name           varchar(50)  not null,
+    pesel               varchar(11)  not null,
+    birth_date          timestamp    not null,
+    login               varchar(50)  not null,
+    password            varchar(50)  not null,
+    email               varchar(50)  not null,
+    gender              ENUM ('MALE', 'FEMALE', 'UNKNOWN') not null,
+    phone_number        varchar(15)  not null,
+    bank_account_number varchar(22)  not null,
+    role                ENUM ( 'ADMIN', 'USER') not null,
+    address_id          VARCHAR(36)  not null,
+    created_at          timestamp    not null,
     CONSTRAINT fk_client_address FOREIGN KEY (address_id) REFERENCES address (address_id)
 );
 
-
-CREATE TYPE category AS ENUM ('OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE');
-CREATE TYPE offer_type AS ENUM ('KUP_TERAZ', 'LICYTACJA', 'OGLOSZENIE');
-CREATE TYPE shipment_type AS ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY');
-CREATE TYPE payment_method AS ENUM ('CREDIT', 'CARD');
-
-CREATE TABLE IF NOT EXISTS item
+CREATE TABLE item
 (
-    item_id uuid    unique          not null,
-    name            varchar(100)    not null,
-    description     varchar(500)    not null,
-    category        category        not null
+    item_id     VARCHAR2(40) not null,
+    name        varchar(100) not null,
+    description varchar(500) not null,
+    category    ENUM ( 'OBUWIE', 'UBRANIA', 'SAMOCHODY', 'NIERUCHOMOSCI', 'ZABAWKI', 'INNE') not null
 );
 
-CREATE TABLE IF NOT EXISTS offer
+CREATE TABLE offer
 (
-    offer_id            uuid unique not null,
-    item_id             uuid not null,
-    seller_id           uuid not null,
-    publication_date    timestamp not null,
-    offer_type          offer_type not null,
-    shipment_type       shipment_type not null,
-    price               decimal         not null,
+    offer_id         VARCHAR2(40) not null,
+    item_id          VARCHAR2(40) not null,
+    seller_id        VARCHAR2(40) not null,
+    publication_date timestamp    not null,
+    offer_type       ENUM ('KUP_TERAZ', 'LICYTACJA', 'OGLOSZENIE') not null,
+    shipment_type    ENUM ('KURIER', 'POCZTA', 'PACZKOMAT', 'ODBIOR_OSOBISTY') not null,
+    price            decimal      not null,
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item (item_id),
     CONSTRAINT fk_client FOREIGN KEY (seller_id) REFERENCES client (client_id)
 );
 
-CREATE TABLE IF NOT EXISTS recommendation
+CREATE TABLE recommendation
 (
-    recommendation_id   uuid unique not null,
-    client_id           uuid not null,
-    offer_id            uuid not null,
-    content             varchar(100) not null,
-    showed_count        int          not null,
-    clicked_count       int          not null,
+    recommendation_id VARCHAR2(40) not null,
+    client_id         VARCHAR2(40) not null,
+    offer_id          VARCHAR2(40) not null,
+    content           varchar(100) not null,
+    showed_count      int          not null,
+    clicked_count     int          not null,
     CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client (client_id),
     CONSTRAINT fk_offer FOREIGN KEY (offer_id) REFERENCES offer (offer_id)
 );
 
-CREATE TABLE IF NOT EXISTS purchase
+CREATE TABLE purchase
 (
-    purchase_id         uuid unique not null,
-    client_id           uuid not null,
-    offer_id            uuid not null,
-    quantity            int       not null,
-    payment_method      payment_method not null,
-    date                timestamp not null,
+    purchase_id    VARCHAR2(40) not null,
+    client_id      VARCHAR2(40) not null,
+    offer_id       VARCHAR2(40) not null,
+    quantity       int          not null,
+    payment_method ENUM ('CREDIT', 'CARD') not null,
+    date           timestamp    not null,
     CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client (client_id),
     CONSTRAINT fk_offer FOREIGN KEY (offer_id) REFERENCES offer (offer_id)
 );
 
-CREATE TABLE IF NOT EXISTS return
+CREATE TABLE return
 (
-    return_id       uuid unique not null,
-    client_id       uuid not null,
-    offer_id        uuid not null,
-    purchase_id     uuid not null,
-    quantity        int       not null,
-    date            timestamp not null,
+    return_id   VARCHAR2(40) not null,
+    client_id   VARCHAR2(40) not null,
+    offer_id    VARCHAR2(40) not null,
+    purchase_id VARCHAR2(40) not null,
+    quantity    int          not null,
+    date        timestamp    not null,
     CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client (client_id),
     CONSTRAINT fk_offer FOREIGN KEY (offer_id) REFERENCES offer (offer_id),
     CONSTRAINT fk_purchase FOREIGN KEY (purchase_id) REFERENCES purchase (purchase_id)
